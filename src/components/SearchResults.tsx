@@ -2,6 +2,9 @@
 
 import { UserResult } from '@/types';
 import UserCard from './UserCard';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Search, AlertCircle, FileSearch } from 'lucide-react';
 
 interface SearchResultsProps {
   results: UserResult[];
@@ -20,41 +23,73 @@ export default function SearchResults({
 }: SearchResultsProps) {
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-32">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      <div className="space-y-6">
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="p-4 border rounded-lg">
+              <div className="flex gap-4">
+                <Skeleton className="h-16 w-16 rounded-full" />
+                <div className="space-y-2 flex-1">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-48" />
+                  <Skeleton className="h-3 w-24" />
+                </div>
+              </div>
+              <Skeleton className="h-4 w-full mt-4" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-4">
-        {error}
-      </div>
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>
+          {error}
+        </AlertDescription>
+      </Alert>
     );
   }
 
   if (!searchQuery) {
     return (
-      <div className="text-center py-8" style={{ color: 'var(--text-secondary)' }}>
-        <p>Enter a search query to find people.</p>
-        <p className="text-sm mt-2">Try queries like &quot;People working on AI at FAANG&quot; or &quot;CS graduates working on autonomous vehicles&quot;</p>
+      <div className="text-center py-12">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-4">
+          <Search className="h-6 w-6 text-muted-foreground" />
+        </div>
+        <h3 className="text-lg font-semibold mb-2">Enter a search query</h3>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          Try queries like &quot;People working on AI at FAANG&quot; or &quot;CS graduates working on autonomous vehicles&quot;
+        </p>
       </div>
     );
   }
 
   if (results.length === 0) {
     return (
-      <div className="text-center py-8" style={{ color: 'var(--text-secondary)' }}>
-        <p>No results found for &quot;{searchQuery}&quot;</p>
-        <p className="text-sm mt-2">Try a different search query or adjust your filters.</p>
+      <div className="text-center py-12">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-4">
+          <FileSearch className="h-6 w-6 text-muted-foreground" />
+        </div>
+        <h3 className="text-lg font-semibold mb-2">No results found</h3>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          No results found for &quot;{searchQuery}&quot;. Try a different search query or adjust your filters.
+        </p>
       </div>
     );
   }
 
   return (
     <div>
-      <div className="mb-4" style={{ color: 'var(--text-secondary)' }}>
+      <div className="text-sm text-muted-foreground mb-6">
         Found {total} result{total !== 1 ? 's' : ''} for &quot;{searchQuery}&quot;
       </div>
       <div className="space-y-4">

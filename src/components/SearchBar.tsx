@@ -1,6 +1,10 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Search, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -17,35 +21,39 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
     }
   };
 
+  const placeholder = 'Search for people (e.g., "People working on AI at FAANG")';
+
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-3xl">
-      <div className="flex items-center py-2" style={{ borderBottomWidth: '1px', borderBottomColor: 'var(--input-border)' }}>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for people (e.g., 'People working on AI at FAANG')"
-          className="appearance-none w-full mr-3 py-1 px-2 leading-tight focus:outline-none"
-          style={{
-            backgroundColor: 'transparent',
-            border: 'none',
-            color: 'var(--text-primary)'
-          }}
-          disabled={isLoading}
-        />
-        <button
-          type="submit"
-          className="flex-shrink-0 text-sm border-4 py-1 px-2 rounded"
-          style={{
-            backgroundColor: 'var(--button-primary)',
-            borderColor: 'var(--button-primary)',
-            color: 'white',
-            opacity: (isLoading || !query.trim()) ? '0.5' : '1'
-          }}
+    <form onSubmit={handleSubmit} className="w-full">
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={placeholder}
+            className="pl-9"
+            disabled={isLoading}
+          />
+        </div>
+        <Button 
+          type="submit" 
           disabled={isLoading || !query.trim()}
+          className={cn(
+            "gap-2",
+            isLoading && "cursor-not-allowed"
+          )}
         >
-          {isLoading ? 'Searching...' : 'Search'}
-        </button>
+          {isLoading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Searching...</span>
+            </>
+          ) : (
+            <span>Search</span>
+          )}
+        </Button>
       </div>
     </form>
   );

@@ -9,6 +9,11 @@ import SearchResults from '@/components/SearchResults';
 import TokenInput from '@/components/TokenInput';
 import SchoolFilter from '@/components/SchoolFilter';
 import LimitSelector from '@/components/LimitSelector';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { InfoIcon, AlertCircle } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,59 +67,104 @@ export default function Home() {
                        error ? String(error) : null;
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-4 md:p-24">
-      <div className="w-full max-w-4xl">
-        <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center" style={{ color: 'var(--text-primary)' }}>Linkd People Search</h1>
+    <main className="container mx-auto py-6 px-4 md:px-6 lg:px-8 max-w-6xl">
+      <div className="space-y-6">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl md:text-4xl font-bold">Linkd People Search</h1>
+          <p className="text-muted-foreground">Search for professionals using natural language queries</p>
+        </div>
         
         <TokenInput 
           onTokenSubmit={handleTokenSubmit} 
           hasToken={!!token} 
         />
         
-        {token ? (
-          <>
-            <div className="flex flex-col md:flex-row gap-6 mb-8">
-              <div className="w-full md:w-1/4">
-                <div className="rounded-lg shadow p-4" style={{ backgroundColor: 'var(--card-bg)', boxShadow: '0 1px 3px 0 var(--card-border)' }}>
-                  <h2 className="text-xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Filters</h2>
+        {!token && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Authentication Required</AlertTitle>
+            <AlertDescription>
+              You need to provide a valid Linkd API token to use this search interface.
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {token && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="md:col-span-1">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Search Filters</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <SchoolFilter 
                     onFilterChange={setSelectedSchools} 
                     selectedSchools={selectedSchools} 
                   />
+                  <Separator />
                   <LimitSelector 
                     limit={resultsLimit} 
                     onChange={setResultsLimit} 
                   />
-                </div>
-              </div>
-              
-              <div className="w-full md:w-3/4">
-                <div className="rounded-lg shadow p-4 mb-6" style={{ backgroundColor: 'var(--card-bg)', boxShadow: '0 1px 3px 0 var(--card-border)' }}>
-                  <SearchBar onSearch={handleSearch} isLoading={isLoading} />
-                </div>
-                
-                <div className="rounded-lg shadow p-4" style={{ backgroundColor: 'var(--card-bg)', boxShadow: '0 1px 3px 0 var(--card-border)' }}>
-                  <SearchResults 
-                    results={data?.results || []} 
-                    total={data?.total || 0} 
-                    isLoading={isLoading} 
-                    searchQuery={searchQuery} 
-                    error={errorMessage} 
-                  />
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             </div>
-          </>
-        ) : (
-          <div className="px-4 py-3 rounded" style={{ 
-            backgroundColor: 'rgba(234, 179, 8, 0.1)',
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'rgba(234, 179, 8, 0.2)',
-            color: 'rgb(161, 98, 7)'
-          }}>
-            <p className="font-semibold">Please enter your API token</p>
-            <p className="text-sm">You need to provide a valid Linkd API token to use this search interface.</p>
+            
+            <div className="md:col-span-3">
+              <Tabs defaultValue="search" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="search">Search</TabsTrigger>
+                  <TabsTrigger value="about">About This Tool</TabsTrigger>
+                </TabsList>
+                <TabsContent value="search" className="space-y-4">
+                  <Card>
+                    <CardContent className="pt-6">
+                      <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+                    </CardContent>
+                  </Card>
+                  
+                  <Card>
+                    <CardContent className="pt-6">
+                      <SearchResults 
+                        results={data?.results || []} 
+                        total={data?.total || 0} 
+                        isLoading={isLoading} 
+                        searchQuery={searchQuery} 
+                        error={errorMessage} 
+                      />
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                <TabsContent value="about">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>About the Linkd Search API</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p>This demo showcases the Linkd Search API, which allows you to search for professionals using natural language queries.</p>
+                      
+                      <h3 className="text-lg font-semibold">Example Queries</h3>
+                      <ul className="list-disc pl-6 space-y-1">
+                        <li>&quot;People working on AI at FAANG&quot;</li>
+                        <li>&quot;People who started companies in Web3 or crypto&quot;</li>
+                        <li>&quot;PhDs now working at FAANG companies&quot;</li>
+                        <li>&quot;Who works at a VC firm?&quot;</li>
+                        <li>&quot;CS graduates working on autonomous vehicles&quot;</li>
+                        <li>&quot;People working on biotech in the Bay Area&quot;</li>
+                      </ul>
+                      
+                      <Alert>
+                        <InfoIcon className="h-4 w-4" />
+                        <AlertTitle>API Information</AlertTitle>
+                        <AlertDescription>
+                          The Linkd Search API requires authentication. Your token is stored locally and only sent to the Linkd API servers.
+                        </AlertDescription>
+                      </Alert>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </div>
           </div>
         )}
       </div>

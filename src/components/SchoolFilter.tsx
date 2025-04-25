@@ -1,6 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { PlusCircle, X } from 'lucide-react';
 
 interface SchoolFilterProps {
   onFilterChange: (schools: string[]) => void;
@@ -31,68 +35,62 @@ export default function SchoolFilter({ onFilterChange, selectedSchools }: School
   };
 
   return (
-    <div className="mb-6">
-      <h3 className="font-medium mb-2" style={{ color: 'var(--text-primary)' }}>Filter by School</h3>
-      <div className="flex mb-2">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Enter school name"
-          className="rounded-l px-4 py-2 w-full focus:outline-none"
-          style={{
-            border: '1px solid var(--input-border)',
-            backgroundColor: 'var(--input-bg)',
-            color: 'var(--text-primary)'
-          }}
-        />
-        <button
-          onClick={handleAddSchool}
-          disabled={!inputValue.trim()}
-          className="font-bold py-2 px-4 rounded-r disabled:opacity-50"
-          style={{ 
-            backgroundColor: 'var(--button-primary)', 
-            color: 'white',
-            border: 'none'
-          }}
-        >
-          Add
-        </button>
+    <div className="space-y-4">
+      <div>
+        <h3 className="text-sm font-medium mb-2">Filter by School</h3>
+        <div className="flex gap-2">
+          <Input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Enter school name"
+          />
+          <Button
+            type="button"
+            onClick={handleAddSchool}
+            disabled={!inputValue.trim()}
+            size="icon"
+            variant="secondary"
+          >
+            <PlusCircle className="h-4 w-4" />
+            <span className="sr-only">Add school</span>
+          </Button>
+        </div>
       </div>
       
       {selectedSchools.length > 0 && (
-        <div className="mt-2">
-          <div className="flex flex-wrap gap-2">
+        <div className="space-y-2">
+          <div className="flex flex-wrap gap-1.5">
             {selectedSchools.map((school) => (
-              <div 
+              <Badge 
                 key={school} 
-                className="text-sm px-3 py-1 rounded-full flex items-center"
-                style={{
-                  backgroundColor: 'var(--input-bg)',
-                  color: 'var(--button-primary)'
-                }}
+                variant="secondary"
+                className="px-2 py-1 text-xs gap-1"
               >
                 <span>{school}</span>
-                <button
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-3 w-3 p-0 ml-1"
                   onClick={() => handleRemoveSchool(school)}
-                  className="ml-2 hover:text-opacity-70"
-                  style={{ color: 'var(--button-primary)' }}
                 >
-                  &times;
-                </button>
-              </div>
+                  <X className="h-3 w-3" />
+                  <span className="sr-only">Remove {school}</span>
+                </Button>
+              </Badge>
             ))}
           </div>
-          {selectedSchools.length > 0 && (
-            <button
-              onClick={() => onFilterChange([])}
-              className="text-xs hover:underline mt-2"
-              style={{ color: 'var(--error-text)' }}
-            >
-              Clear all filters
-            </button>
-          )}
+          <Button
+            type="button"
+            variant="link"
+            size="sm"
+            className="text-xs h-auto p-0 text-muted-foreground"
+            onClick={() => onFilterChange([])}
+          >
+            Clear all filters
+          </Button>
         </div>
       )}
     </div>

@@ -1,5 +1,7 @@
 'use client';
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 interface LimitSelectorProps {
   limit: number;
   onChange: (limit: number) => void;
@@ -9,24 +11,23 @@ export default function LimitSelector({ limit, onChange }: LimitSelectorProps) {
   const options = [5, 10, 20, 30];
 
   return (
-    <div className="mb-6">
-      <h3 className="font-medium mb-2" style={{ color: 'var(--text-primary)' }}>Results per page</h3>
-      <select
-        value={limit}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="rounded px-4 py-2 w-full focus:outline-none"
-        style={{
-          border: '1px solid var(--input-border)',
-          backgroundColor: 'var(--input-bg)',
-          color: 'var(--text-primary)'
-        }}
+    <div className="space-y-2">
+      <h3 className="text-sm font-medium">Results per page</h3>
+      <Select
+        value={limit.toString()}
+        onValueChange={(value) => onChange(Number(value))}
       >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
+        <SelectTrigger>
+          <SelectValue placeholder="Select limit" />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option} value={option.toString()}>
+              {option} results
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 } 
