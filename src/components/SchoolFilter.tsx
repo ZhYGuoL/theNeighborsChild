@@ -4,7 +4,13 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { PlusCircle, X } from 'lucide-react';
+import { PlusCircle, X, HelpCircle } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface SchoolFilterProps {
   onFilterChange: (schools: string[]) => void;
@@ -37,7 +43,22 @@ export default function SchoolFilter({ onFilterChange, selectedSchools }: School
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-sm font-medium mb-2">Filter by School</h3>
+        <div className="flex items-center gap-1 mb-2">
+          <h3 className="text-sm font-medium">Filter by School</h3>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-4 w-4 p-0">
+                  <HelpCircle className="h-3 w-3 text-muted-foreground" />
+                  <span className="sr-only">School filter info</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[220px] text-xs">
+                <p>Use the exact school name as it appears on LinkedIn profiles (e.g., &quot;Stanford University&quot; not &quot;Stanford&quot;)</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
         <div className="flex gap-2">
           <Input
             type="text"
@@ -57,6 +78,9 @@ export default function SchoolFilter({ onFilterChange, selectedSchools }: School
             <span className="sr-only">Add school</span>
           </Button>
         </div>
+        <p className="text-xs text-muted-foreground mt-1">
+          Enter the exact school name as displayed on LinkedIn profiles
+        </p>
       </div>
       
       {selectedSchools.length > 0 && (

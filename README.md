@@ -52,6 +52,15 @@ npm run dev
 3. Optionally, filter results by school
 4. View user profiles and their details
 
+### School Filtering
+
+When using the school filter, please note:
+
+- Use the exact school name as it appears on LinkedIn profiles
+- The filter must match the school's LinkedIn display name
+- For example, use "Stanford University" instead of "Stanford" or "SU"
+- Multiple school filters can be added to broaden your search
+
 ## Example Queries
 
 - "People working on AI at FAANG"
@@ -75,4 +84,4 @@ Required headers:
 Query parameters:
 - `query` (required): The search query string
 - `limit` (optional): Maximum number of results to return (default: 10, max: 30)
-- `school` (optional): Filter results by school name(s)
+- `school` (optional): Filter results by school name(s). Must match the school name as displayed on LinkedIn profiles.
