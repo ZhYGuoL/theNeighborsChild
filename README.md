@@ -22,7 +22,7 @@ A Next.js application that demonstrates how to use the Linkd Search API to find 
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/linkd-team/search-api-demo.git
 cd search-api-demo
 ```
 
