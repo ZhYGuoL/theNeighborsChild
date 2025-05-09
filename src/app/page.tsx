@@ -9,6 +9,7 @@ import SearchResults from '@/components/SearchResults';
 import TokenInput from '@/components/TokenInput';
 import SchoolFilter from '@/components/SchoolFilter';
 import LimitSelector from '@/components/LimitSelector';
+import LinkedInTester from '@/components/LinkedInTester';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -90,82 +91,89 @@ export default function Home() {
         )}
         
         {token && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="md:col-span-1">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Search Filters</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <SchoolFilter 
-                    onFilterChange={setSelectedSchools} 
-                    selectedSchools={selectedSchools} 
-                  />
-                  <Separator />
-                  <LimitSelector 
-                    limit={resultsLimit} 
-                    onChange={setResultsLimit} 
-                  />
-                </CardContent>
-              </Card>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="md:col-span-1">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Search Filters</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <SchoolFilter 
+                      onFilterChange={setSelectedSchools} 
+                      selectedSchools={selectedSchools} 
+                    />
+                    <Separator />
+                    <LimitSelector 
+                      limit={resultsLimit} 
+                      onChange={setResultsLimit} 
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <div className="md:col-span-3">
+                <Tabs defaultValue="search" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="search">Search</TabsTrigger>
+                    <TabsTrigger value="about">About This Tool</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="search" className="space-y-4">
+                    <Card>
+                      <CardContent className="pt-6">
+                        <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardContent className="pt-6">
+                        <SearchResults 
+                          results={data?.results || []} 
+                          total={data?.total || 0} 
+                          isLoading={isLoading} 
+                          searchQuery={searchQuery} 
+                          error={errorMessage} 
+                        />
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                  <TabsContent value="about">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>About the Linkd Search API</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <p>This demo showcases the Linkd Search API, which allows you to search for professionals using natural language queries.</p>
+                        
+                        <h3 className="text-lg font-semibold">Example Queries</h3>
+                        <ul className="list-disc pl-6 space-y-1">
+                          <li>&quot;People working on AI at FAANG&quot;</li>
+                          <li>&quot;People who started companies in Web3 or crypto&quot;</li>
+                          <li>&quot;PhDs now working at FAANG companies&quot;</li>
+                          <li>&quot;Who works at a VC firm?&quot;</li>
+                          <li>&quot;CS graduates working on autonomous vehicles&quot;</li>
+                          <li>&quot;People working on biotech in the Bay Area&quot;</li>
+                        </ul>
+                        
+                        <Alert>
+                          <InfoIcon className="h-4 w-4" />
+                          <AlertTitle>API Information</AlertTitle>
+                          <AlertDescription>
+                            The Linkd Search API requires authentication. Your token is stored locally and only sent to the Linkd API servers.
+                          </AlertDescription>
+                        </Alert>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              </div>
             </div>
-            
-            <div className="md:col-span-3">
-              <Tabs defaultValue="search" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="search">Search</TabsTrigger>
-                  <TabsTrigger value="about">About This Tool</TabsTrigger>
-                </TabsList>
-                <TabsContent value="search" className="space-y-4">
-                  <Card>
-                    <CardContent className="pt-6">
-                      <SearchBar onSearch={handleSearch} isLoading={isLoading} />
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardContent className="pt-6">
-                      <SearchResults 
-                        results={data?.results || []} 
-                        total={data?.total || 0} 
-                        isLoading={isLoading} 
-                        searchQuery={searchQuery} 
-                        error={errorMessage} 
-                      />
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                <TabsContent value="about">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>About the Linkd Search API</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p>This demo showcases the Linkd Search API, which allows you to search for professionals using natural language queries.</p>
-                      
-                      <h3 className="text-lg font-semibold">Example Queries</h3>
-                      <ul className="list-disc pl-6 space-y-1">
-                        <li>&quot;People working on AI at FAANG&quot;</li>
-                        <li>&quot;People who started companies in Web3 or crypto&quot;</li>
-                        <li>&quot;PhDs now working at FAANG companies&quot;</li>
-                        <li>&quot;Who works at a VC firm?&quot;</li>
-                        <li>&quot;CS graduates working on autonomous vehicles&quot;</li>
-                        <li>&quot;People working on biotech in the Bay Area&quot;</li>
-                      </ul>
-                      
-                      <Alert>
-                        <InfoIcon className="h-4 w-4" />
-                        <AlertTitle>API Information</AlertTitle>
-                        <AlertDescription>
-                          The Linkd Search API requires authentication. Your token is stored locally and only sent to the Linkd API servers.
-                        </AlertDescription>
-                      </Alert>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
+
+            <div className="mt-8">
+              <h2 className="text-2xl font-bold mb-4">LinkedIn Integration</h2>
+              <LinkedInTester />
             </div>
-          </div>
+          </>
         )}
       </div>
     </main>
